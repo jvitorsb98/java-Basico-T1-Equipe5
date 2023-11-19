@@ -3,7 +3,7 @@
 ## Integrantes : 
 
 1. João Ramos
-2 . Vinicius Lima
+2. Vinicius Lima
 3. Giuseppe Mota
 4. Everlan Santos
 5. Paulo Pereira
