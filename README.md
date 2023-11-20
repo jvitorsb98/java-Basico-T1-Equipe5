@@ -6,7 +6,7 @@
 2. Vinicius Lima
 3. Giuseppe Mota
 4. Everlan Santos
-5. Paulo Pereira
+5. Paulo Pereira Marques
 
 ## Questão 1 - Pesquise no Google e responda às perguntas abaixo.
 1. O que é uma classe em Java e qual é a diferença entre uma classe e um objeto? Dê 5 exemplos mostrando-os em C++ e em Java.
