@@ -22,6 +22,14 @@ public class Cliente {
 		
 	}
 	
+    public void adicionarImovel(Imovel imovel) {
+        imoveisCliente.add(imovel);
+    }
+
+    public void removerImovel(Imovel imovel) {
+        imoveisCliente.remove(imovel);
+    }
+	
 	public int getId() {
 		return id;
 	}

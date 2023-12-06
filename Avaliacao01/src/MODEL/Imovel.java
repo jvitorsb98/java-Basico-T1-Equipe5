@@ -13,7 +13,7 @@ public class Imovel {
     public Imovel() {
 	}
     
-	public Imovel(int id, String matricula, String endereco, int ultimaLeitura, int penultimaLeitura, Cliente cliente) {
+	public Imovel(String matricula, String endereco, int ultimaLeitura, int penultimaLeitura, Cliente cliente) {
 		quantidadeDeImoveis++;
 		this.id = quantidadeDeImoveis;
 		this.id = id;
@@ -25,6 +25,15 @@ public class Imovel {
 	}
 
 	
+	
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
 	public int getId() {
 		return id;
 	}

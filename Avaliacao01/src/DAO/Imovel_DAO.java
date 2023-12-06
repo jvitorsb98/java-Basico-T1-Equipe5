@@ -56,6 +56,33 @@ public class Imovel_DAO {
 
         return imovel;
     }
+    
+    public Imovel obterImovelPorMatricula(String matricula) {
+        DAO dao = new DAO();
+        Connection con = dao.conectar();
+        Imovel imovel = null;
+        String query = "SELECT * FROM imoveis WHERE matricula = ?";
+
+        try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
+            preparedStatement.setString(1, matricula);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                imovel = new Imovel();
+                imovel.setId(resultSet.getInt("id"));
+                imovel.setMatricula(resultSet.getString("matricula"));
+                imovel.setEndereco(resultSet.getString("endereco"));
+                imovel.setUltimaLeitura(resultSet.getInt("ultimaLeitura"));
+                imovel.setPenultimaLeitura(resultSet.getInt("penultimaLeitura"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            dao.closeConnection(con);
+        }
+
+        return imovel;
+    }
 
     // Método para obter todos os imóveis do banco de dados
     public List<Imovel> obterTodosImoveis() {
@@ -106,13 +133,13 @@ public class Imovel_DAO {
     }
 
     // Método para excluir um imóvel do banco de dados
-    public void excluirImovel(int id) {
+    public void excluirImovelPorMatricula(String matricula) {
         DAO dao = new DAO();
         Connection con = dao.conectar();
-        String query = "DELETE FROM imoveis WHERE id = ?";
+        String query = "DELETE FROM imoveis WHERE matricula = ?";
 
         try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
-            preparedStatement.setInt(1, id);
+            preparedStatement.setString(1, matricula);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -120,4 +147,5 @@ public class Imovel_DAO {
             dao.closeConnection(con);
         }
     }
+
 }

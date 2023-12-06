@@ -36,7 +36,7 @@ public abstract class MenuGestaoImoveis {
                     listarTodosImoveis();
                     break;
                 case 3:
-                    buscarImovelPorId();
+                	buscarImovelPorMatricula();
                     break;
                 case 4:
                     atualizarImovel();
@@ -65,27 +65,31 @@ public abstract class MenuGestaoImoveis {
         int ultimaLeitura = scanner.nextInt();
         System.out.print("Penúltima Leitura: ");
         int penultimaLeitura = scanner.nextInt();
-        
-        System.out.println("Qual CPF do cliente dono do imóvel ? ");
-        String cpf = scanner.nextLine();
-        
+
+        System.out.println("Qual CPF do cliente dono do imóvel? ");
+        String cpf = scanner.next();
+
         if (Verificacoes.validarCPF(cpf)) {
             Cliente cliente = clienteDAO.obterClientePorCPF(cpf);
 
             if (cliente != null) {
-                Imovel novoImovel = new Imovel(0, matricula, endereco, ultimaLeitura, penultimaLeitura,cliente);
-                imovelDAO.adicionarImovel(novoImovel);
-                System.out.println("Imóvel adicionado com sucesso!");
-                
+                Imovel novoImovel = new Imovel(matricula, endereco, ultimaLeitura, penultimaLeitura, cliente);
+                // Utiliza o método que verifica se já existe um imóvel com a mesma matrícula
+                if (imovelDAO.obterImovelPorMatricula(matricula) == null) {
+                	cliente.adicionarImovel(novoImovel);
+                    imovelDAO.adicionarImovel(novoImovel);
+                    System.out.println("Imóvel adicionado com sucesso!");
+                } else {
+                    System.out.println("Já existe um imóvel com a mesma matrícula.");
+                }
             } else {
                 System.out.println("Cliente não encontrado.");
             }
         } else {
             System.out.println("CPF inválido.");
         }
-        
-        
     }
+
 
 
     private static void listarTodosImoveis() {
@@ -104,16 +108,16 @@ public abstract class MenuGestaoImoveis {
     }
 
 
-    private static void buscarImovelPorId() {
-        System.out.println("==== Buscar Imóvel por ID ====");
-        System.out.print("Digite o ID do imóvel: ");
-        int id = scanner.nextInt();
+    private static void buscarImovelPorMatricula() {
+        System.out.println("==== Buscar Imóvel por Matrícula ====");
+        System.out.print("Digite a Matrícula do imóvel: ");
+        String matricula = scanner.next();
 
-        Imovel imovel = imovelDAO.obterImovelPorId(id);
+        Imovel imovel = imovelDAO.obterImovelPorMatricula(matricula);
 
         if (imovel != null) {
             System.out.println("Imóvel encontrado:");
-            System.out.println("ID: " + imovel.getId() + ", Matrícula: " + imovel.getMatricula()
+            System.out.println("Matrícula: " + imovel.getMatricula()
                     + ", Endereço: " + imovel.getEndereco() + ", Última Leitura: " + imovel.getUltimaLeitura()
                     + ", Penúltima Leitura: " + imovel.getPenultimaLeitura());
         } else {
@@ -121,13 +125,12 @@ public abstract class MenuGestaoImoveis {
         }
     }
 
-
     private static void atualizarImovel() {
-        System.out.println("==== Atualizar Imóvel ====");
-        System.out.print("Digite o ID do imóvel que deseja atualizar: ");
-        int id = scanner.nextInt();
+        System.out.println("==== Buscar Imóvel por Matrícula ====");
+        System.out.print("Digite a Matrícula do imóvel: ");
+        String matricula = scanner.next();
 
-        Imovel imovel = imovelDAO.obterImovelPorId(id);
+        Imovel imovel = imovelDAO.obterImovelPorMatricula(matricula);
 
         if (imovel != null) {
             exibirMenuAtualizacaoImovel(imovel);
@@ -204,20 +207,22 @@ public abstract class MenuGestaoImoveis {
     }
 
 
-
     private static void excluirImovel() {
         System.out.println("==== Excluir Imóvel ====");
-        System.out.print("Digite o ID do imóvel que deseja excluir: ");
-        int id = scanner.nextInt();
+        System.out.print("Digite a Matrícula do imóvel que deseja excluir: ");
+        String matricula = scanner.next();
 
-        Imovel imovel = imovelDAO.obterImovelPorId(id);
-
+        Imovel imovel = imovelDAO.obterImovelPorMatricula(matricula);
+        Cliente clienteDono = imovel.getCliente();
         if (imovel != null) {
-            imovelDAO.excluirImovel(id);
+        	clienteDono.removerImovel(imovel);
+        	clienteDAO.atualizarCliente(clienteDono);
+            imovelDAO.excluirImovelPorMatricula(matricula);
             System.out.println("Imóvel excluído com sucesso!");
         } else {
             System.out.println("Imóvel não encontrado.");
         }
     }
+
 
 }
