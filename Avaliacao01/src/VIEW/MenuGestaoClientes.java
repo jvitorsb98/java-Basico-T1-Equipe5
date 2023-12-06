@@ -123,21 +123,7 @@ public abstract class MenuGestaoClientes {
             Cliente cliente = clienteDAO.obterClientePorCPF(cpf);
 
             if (cliente != null) {
-                System.out.print("Novo Nome: ");
-                String novoNome = scanner.next();
-                System.out.print("Novo CPF: ");
-                String novoCpf = scanner.next();
-
-                if (Verificacoes.validarCPF(novoCpf)) {
-                    cliente.setNome(novoNome);
-                    cliente.setCpf(novoCpf);
-
-                    clienteDAO.atualizarCliente(cliente);
-
-                    System.out.println("Cliente atualizado com sucesso!");
-                } else {
-                    System.out.println("Novo CPF inválido.");
-                }
+                exibirMenuAtualizacaoCliente(cliente);
             } else {
                 System.out.println("Cliente não encontrado.");
             }
@@ -145,6 +131,54 @@ public abstract class MenuGestaoClientes {
             System.out.println("CPF inválido.");
         }
     }
+
+    private static void exibirMenuAtualizacaoCliente(Cliente cliente) {
+        int opcao;
+        do {
+            System.out.println("=== Opções de Atualização ===");
+            System.out.println("1. Atualizar Nome");
+            System.out.println("2. Atualizar CPF");
+            System.out.println("0. Voltar ao Menu Anterior");
+            System.out.print("Escolha uma opção: ");
+            opcao = scanner.nextInt();
+
+            switch (opcao) {
+                case 1:
+                    atualizarNome(cliente);
+                    break;
+                case 2:
+                    atualizarCPF(cliente);
+                    break;
+                case 0:
+                    System.out.println("Voltando ao Menu Anterior.");
+                    break;
+                default:
+                    System.out.println("Opção inválida. Tente novamente.");
+            }
+        } while (opcao != 0);
+    }
+
+    private static void atualizarNome(Cliente cliente) {
+        System.out.print("Novo Nome: ");
+        String novoNome = scanner.next();
+        cliente.setNome(novoNome);
+        clienteDAO.atualizarCliente(cliente);
+        System.out.println("Nome atualizado com sucesso!");
+    }
+
+    private static void atualizarCPF(Cliente cliente) {
+        System.out.print("Novo CPF: ");
+        String novoCpf = scanner.next();
+
+        if (Verificacoes.validarCPF(novoCpf)) {
+            cliente.setCpf(novoCpf);
+            clienteDAO.atualizarCliente(cliente);
+            System.out.println("CPF atualizado com sucesso!");
+        } else {
+            System.out.println("Novo CPF inválido.");
+        }
+    }
+
 
 
     private static void excluirCliente() {

@@ -1,13 +1,17 @@
 package VIEW;
 
-import DAO.Imovel_DAO;
-import MODEL.Imovel;
-
 import java.util.List;
 import java.util.Scanner;
 
+import DAO.Cliente_DAO;
+import DAO.Imovel_DAO;
+import MODEL.Cliente;
+import MODEL.Imovel;
+import MODEL.Verificacoes;
+
 public abstract class MenuGestaoImoveis {
 
+    private static final Cliente_DAO clienteDAO = new Cliente_DAO();
     private static final Imovel_DAO imovelDAO = new Imovel_DAO();
     private static final Scanner scanner = new Scanner(System.in);
 
@@ -61,10 +65,26 @@ public abstract class MenuGestaoImoveis {
         int ultimaLeitura = scanner.nextInt();
         System.out.print("Penúltima Leitura: ");
         int penultimaLeitura = scanner.nextInt();
+        
+        System.out.println("Qual CPF do cliente dono do imóvel ? ");
+        String cpf = scanner.nextLine();
+        
+        if (Verificacoes.validarCPF(cpf)) {
+            Cliente cliente = clienteDAO.obterClientePorCPF(cpf);
 
-        Imovel novoImovel = new Imovel(0, matricula, endereco, ultimaLeitura, penultimaLeitura);
-        imovelDAO.adicionarImovel(novoImovel);
-        System.out.println("Imóvel adicionado com sucesso!");
+            if (cliente != null) {
+                Imovel novoImovel = new Imovel(0, matricula, endereco, ultimaLeitura, penultimaLeitura,cliente);
+                imovelDAO.adicionarImovel(novoImovel);
+                System.out.println("Imóvel adicionado com sucesso!");
+                
+            } else {
+                System.out.println("Cliente não encontrado.");
+            }
+        } else {
+            System.out.println("CPF inválido.");
+        }
+        
+        
     }
 
 
@@ -110,23 +130,79 @@ public abstract class MenuGestaoImoveis {
         Imovel imovel = imovelDAO.obterImovelPorId(id);
 
         if (imovel != null) {
-            System.out.print("Nova Matrícula: ");
-            String novaMatricula = scanner.next();
-            System.out.print("Novo Endereço: ");
-            String novoEndereco = scanner.nextLine();  // Consumir a quebra de linha pendente
-            novoEndereco = scanner.nextLine();  // Obter a entrada correta para o endereço
-            System.out.print("Nova Última Leitura: ");
-            int novaUltimaLeitura = scanner.nextInt();
-            System.out.print("Nova Penúltima Leitura: ");
-            int novaPenultimaLeitura = scanner.nextInt();
-
-            Imovel imovelAtualizado = new Imovel(id, novaMatricula, novoEndereco, novaUltimaLeitura, novaPenultimaLeitura);
-            imovelDAO.atualizarImovel(imovelAtualizado);
-            System.out.println("Imóvel atualizado com sucesso!");
+            exibirMenuAtualizacaoImovel(imovel);
         } else {
             System.out.println("Imóvel não encontrado.");
         }
     }
+
+    private static void exibirMenuAtualizacaoImovel(Imovel imovel) {
+        int opcao;
+        do {
+            System.out.println("=== Opções de Atualização ===");
+            System.out.println("1. Atualizar Matrícula");
+            System.out.println("2. Atualizar Endereço");
+            System.out.println("3. Atualizar Última Leitura");
+            System.out.println("4. Atualizar Penúltima Leitura");
+            System.out.println("0. Voltar ao Menu Anterior");
+            System.out.print("Escolha uma opção: ");
+            opcao = scanner.nextInt();
+
+            switch (opcao) {
+                case 1:
+                    atualizarMatricula(imovel);
+                    break;
+                case 2:
+                    atualizarEndereco(imovel);
+                    break;
+                case 3:
+                    atualizarUltimaLeitura(imovel);
+                    break;
+                case 4:
+                    atualizarPenultimaLeitura(imovel);
+                    break;
+                case 0:
+                    System.out.println("Voltando ao Menu Anterior.");
+                    break;
+                default:
+                    System.out.println("Opção inválida. Tente novamente.");
+            }
+        } while (opcao != 0);
+    }
+
+    private static void atualizarMatricula(Imovel imovel) {
+        System.out.print("Nova Matrícula: ");
+        String novaMatricula = scanner.next();
+        imovel.setMatricula(novaMatricula);
+        imovelDAO.atualizarImovel(imovel);
+        System.out.println("Matrícula atualizada com sucesso!");
+    }
+
+    private static void atualizarEndereco(Imovel imovel) {
+        System.out.print("Novo Endereço: ");
+        String novoEndereco = scanner.nextLine();  // Consumir a quebra de linha pendente
+        novoEndereco = scanner.nextLine();  // Obter a entrada correta para o endereço
+        imovel.setEndereco(novoEndereco);
+        imovelDAO.atualizarImovel(imovel);
+        System.out.println("Endereço atualizado com sucesso!");
+    }
+
+    private static void atualizarUltimaLeitura(Imovel imovel) {
+        System.out.print("Nova Última Leitura: ");
+        int novaUltimaLeitura = scanner.nextInt();
+        imovel.setUltimaLeitura(novaUltimaLeitura);
+        imovelDAO.atualizarImovel(imovel);
+        System.out.println("Última Leitura atualizada com sucesso!");
+    }
+
+    private static void atualizarPenultimaLeitura(Imovel imovel) {
+        System.out.print("Nova Penúltima Leitura: ");
+        int novaPenultimaLeitura = scanner.nextInt();
+        imovel.setPenultimaLeitura(novaPenultimaLeitura);
+        imovelDAO.atualizarImovel(imovel);
+        System.out.println("Penúltima Leitura atualizada com sucesso!");
+    }
+
 
 
     private static void excluirImovel() {
