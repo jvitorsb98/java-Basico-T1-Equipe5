@@ -62,6 +62,26 @@ public class Fatura_DAO {
 
         return faturas;
     }
+    
+    public Fatura obterFaturaPorNumero(int idFatura) {
+        DAO dao = new DAO();
+        Connection con = dao.conectar();
+        String query = "SELECT * FROM faturas WHERE id = ?";
+
+        try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
+            preparedStatement.setInt(1, idFatura);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return criarFatura(resultSet);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            dao.closeConnection(con);
+        }
+        return null;
+    }
 
     private Fatura criarFatura(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id");

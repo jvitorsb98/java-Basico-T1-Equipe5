@@ -1,6 +1,7 @@
 package MODEL;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class Fatura {
     private int id;
@@ -11,6 +12,7 @@ public class Fatura {
     private boolean quitado;
     private Imovel imovel;
     private static int quantidadeDeFaturasCriadas;
+    ArrayList<Pagamento> listaPagamentos;
 
     public Fatura(int ultimaLeitura, int penultimaLeitura, double valor, Imovel imovel) {
         quantidadeDeFaturasCriadas++;
@@ -21,6 +23,7 @@ public class Fatura {
         this.valor = valor;
         this.quitado = false;
         this.imovel = imovel;
+        listaPagamentos = new ArrayList<>();
     }
 
     public Fatura() {

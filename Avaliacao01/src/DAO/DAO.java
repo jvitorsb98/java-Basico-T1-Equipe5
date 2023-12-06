@@ -45,7 +45,7 @@ public class DAO {
 		try {
 			if (con != null) {
 				con.close();
-				System.out.println("Conexão feichada !!!");
+				System.out.println("Conexão fechada !!!");
 			}
 		} catch (SQLException ex) {
 			Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
