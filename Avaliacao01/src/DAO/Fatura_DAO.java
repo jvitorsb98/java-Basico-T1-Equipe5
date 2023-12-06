@@ -1,5 +1,90 @@
 package DAO;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import MODEL.Fatura;
+import MODEL.Imovel;
+
 public class Fatura_DAO {
+
+    private static final Imovel_DAO imovelDAO = new Imovel_DAO();
+
+	
+    public void adicionarFatura(Fatura fatura) {
+        DAO dao = new DAO();
+        Connection con = dao.conectar();
+
+        String query = "INSERT INTO faturas (data, ultimaLeitura, penultimaLeitura, valor, quitado, imovel_id) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
+            preparedStatement.setDate(1, java.sql.Date.valueOf(fatura.getData()));
+            preparedStatement.setInt(2, fatura.getUltimaLeitura());
+            preparedStatement.setInt(3, fatura.getPenultimaLeitura());
+            preparedStatement.setDouble(4, fatura.getValor());
+            preparedStatement.setBoolean(5, fatura.isQuitado());
+            preparedStatement.setInt(6, fatura.getImovel().getId());
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            dao.closeConnection(con);
+        }
+    }
+
+    public List<Fatura> obterFaturasPorImovel(int imovelId) {
+        List<Fatura> faturas = new ArrayList<>();
+        DAO dao = new DAO();
+        Connection con = dao.conectar();
+
+        String query = "SELECT * FROM faturas WHERE imovel_id = ?";
+
+        try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
+            preparedStatement.setInt(1, imovelId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Fatura fatura = criarFatura(resultSet);
+                    faturas.add(fatura);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            dao.closeConnection(con);
+        }
+
+        return faturas;
+    }
+
+    private Fatura criarFatura(ResultSet resultSet) throws SQLException {
+        int id = resultSet.getInt("id");
+        LocalDate data = resultSet.getDate("data").toLocalDate();
+        int ultimaLeitura = resultSet.getInt("ultimaLeitura");
+        int penultimaLeitura = resultSet.getInt("penultimaLeitura");
+        double valor = resultSet.getDouble("valor");
+        boolean quitado = resultSet.getBoolean("quitado");
+        int imovelId = resultSet.getInt("imovel_id");
+
+        Imovel imovel = imovelDAO.obterImovelPorId(imovelId);
+
+        Fatura fatura = new Fatura();
+        fatura.setId(id);
+        fatura.setData(data);
+        fatura.setUltimaLeitura(ultimaLeitura);
+        fatura.setPenultimaLeitura(penultimaLeitura);
+        fatura.setValor(valor);
+        fatura.setQuitado(quitado);
+        fatura.setImovel(imovel);
+
+        return fatura;
+    }
+
 
 }

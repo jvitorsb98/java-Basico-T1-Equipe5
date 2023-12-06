@@ -1,85 +1,84 @@
 package MODEL;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Fatura {
-	private int id;
-    private Date data;
+    private int id;
+    private LocalDate data;
     private int ultimaLeitura;
     private int penultimaLeitura;
     private double valor;
     private boolean quitado;
     private Imovel imovel;
-	
-    public Fatura(int id, Date data, int ultimaLeitura, int penultimaLeitura, double valor, boolean quitado,
-			Imovel imovel) {
-		this.id = id;
-		this.data = data;
-		this.ultimaLeitura = ultimaLeitura;
-		this.penultimaLeitura = penultimaLeitura;
-		this.valor = valor;
-		this.quitado = quitado;
-		this.imovel = imovel;
-	}
+    private static int quantidadeDeFaturasCriadas;
 
-	public Fatura() {
-	}
+    public Fatura(int ultimaLeitura, int penultimaLeitura, double valor, Imovel imovel) {
+        quantidadeDeFaturasCriadas++;
+        this.id = quantidadeDeFaturasCriadas;
+        this.data = LocalDate.now();
+        this.ultimaLeitura = ultimaLeitura;
+        this.penultimaLeitura = penultimaLeitura;
+        this.valor = valor;
+        this.quitado = false;
+        this.imovel = imovel;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public Fatura() {
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public Date getData() {
-		return data;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setData(Date data) {
-		this.data = data;
-	}
+    public LocalDate getData() {
+        return data;
+    }
 
-	public int getUltimaLeitura() {
-		return ultimaLeitura;
-	}
+    public void setData(LocalDate data) {
+        this.data = data;
+    }
 
-	public void setUltimaLeitura(int ultimaLeitura) {
-		this.ultimaLeitura = ultimaLeitura;
-	}
+    public int getUltimaLeitura() {
+        return ultimaLeitura;
+    }
 
-	public int getPenultimaLeitura() {
-		return penultimaLeitura;
-	}
+    public void setUltimaLeitura(int ultimaLeitura) {
+        this.ultimaLeitura = ultimaLeitura;
+    }
 
-	public void setPenultimaLeitura(int penultimaLeitura) {
-		this.penultimaLeitura = penultimaLeitura;
-	}
+    public int getPenultimaLeitura() {
+        return penultimaLeitura;
+    }
 
-	public double getValor() {
-		return valor;
-	}
+    public void setPenultimaLeitura(int penultimaLeitura) {
+        this.penultimaLeitura = penultimaLeitura;
+    }
 
-	public void setValor(double valor) {
-		this.valor = valor;
-	}
+    public double getValor() {
+        return valor;
+    }
 
-	public boolean isQuitado() {
-		return quitado;
-	}
+    public void setValor(double valor) {
+        this.valor = valor;
+    }
 
-	public void setQuitado(boolean quitado) {
-		this.quitado = quitado;
-	}
+    public boolean isQuitado() {
+        return quitado;
+    }
 
-	public Imovel getImovel() {
-		return imovel;
-	}
+    public void setQuitado(boolean quitado) {
+        this.quitado = quitado;
+    }
 
-	public void setImovel(Imovel imovel) {
-		this.imovel = imovel;
-	}
-    
-    
+    public Imovel getImovel() {
+        return imovel;
+    }
+
+    public void setImovel(Imovel imovel) {
+        this.imovel = imovel;
+    }
 }

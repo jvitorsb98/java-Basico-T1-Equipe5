@@ -1,5 +1,7 @@
 package MODEL;
 
+import java.util.ArrayList;
+
 public class Imovel {
 	private int id;
     private String matricula;
@@ -7,12 +9,14 @@ public class Imovel {
     private int ultimaLeitura;
     private int penultimaLeitura;
     private static int quantidadeDeImoveis;
+    private ArrayList<Fatura> faturas;
     Cliente cliente;
 
 	    
     public Imovel() {
 	}
     
+
 	public Imovel(String matricula, String endereco, int ultimaLeitura, int penultimaLeitura, Cliente cliente) {
 		quantidadeDeImoveis++;
 		this.id = quantidadeDeImoveis;
@@ -22,9 +26,13 @@ public class Imovel {
 		this.ultimaLeitura = ultimaLeitura;
 		this.penultimaLeitura = penultimaLeitura;
 		this.cliente = cliente;
+		faturas = new ArrayList<>();
 	}
 
-	
+	public ArrayList<Fatura> getFaturas() {
+		return faturas;
+	}
+
 	
 	public Cliente getCliente() {
 		return cliente;
