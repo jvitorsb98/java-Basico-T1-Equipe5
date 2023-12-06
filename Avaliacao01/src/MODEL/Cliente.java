@@ -1,15 +1,21 @@
 package MODEL;
 
+import java.util.ArrayList;
+
 public class Cliente {
 	private int id;
     private String nome;
     private String cpf;
+    ArrayList<Imovel> imoveisCliente;
+    private static int quantidadeDeClientesCriados;
     
     
-	public Cliente(int id, String nome, String cpf) {
-		this.id = id;
+	public Cliente(String nome, String cpf) {
+		quantidadeDeClientesCriados++;
+		this.id = quantidadeDeClientesCriados;
 		this.nome = nome;
 		this.cpf = cpf;
+		this.imoveisCliente = new ArrayList<>();
 	}
 	
 	public Cliente() {
@@ -34,5 +40,16 @@ public class Cliente {
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
 	}
+
+	public ArrayList<Imovel> getImoveisCliente() {
+		return imoveisCliente;
+	}
+
+	public void setImoveisCliente(ArrayList<Imovel> imoveisCliente) {
+		this.imoveisCliente = imoveisCliente;
+	}
     
+	
+	
+	
 }

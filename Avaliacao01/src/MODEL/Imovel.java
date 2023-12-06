@@ -6,19 +6,20 @@ public class Imovel {
     private String endereco;
     private int ultimaLeitura;
     private int penultimaLeitura;
-    private Cliente cliente;
+    private static int quantidadeDeImoveis;
 
 	    
     public Imovel() {
 	}
     
-	public Imovel(int id, String matricula, String endereco, int ultimaLeitura, int penultimaLeitura, Cliente cliente) {
+	public Imovel(int id, String matricula, String endereco, int ultimaLeitura, int penultimaLeitura) {
+		quantidadeDeImoveis++;
+		this.id = quantidadeDeImoveis;
 		this.id = id;
 		this.matricula = matricula;
 		this.endereco = endereco;
 		this.ultimaLeitura = ultimaLeitura;
 		this.penultimaLeitura = penultimaLeitura;
-		this.cliente = cliente;
 	}
 	
 	public int getId() {
@@ -51,12 +52,5 @@ public class Imovel {
 	public void setPenultimaLeitura(int penultimaLeitura) {
 		this.penultimaLeitura = penultimaLeitura;
 	}
-	public Cliente getCliente() {
-		return cliente;
-	}
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
-	}
-    
     
 }

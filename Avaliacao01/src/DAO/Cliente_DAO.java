@@ -50,6 +50,31 @@ public class Cliente_DAO {
 
         return cliente;
     }
+    
+    public Cliente obterClientePorCPF(String cpf) {
+        DAO dao = new DAO();
+        Connection con = dao.conectar();
+        Cliente cliente = null;
+        String query = "SELECT * FROM clientes WHERE cpf = ?";
+
+        try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
+            preparedStatement.setString(1, cpf);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                cliente = new Cliente();
+                cliente.setId(resultSet.getInt("id"));
+                cliente.setNome(resultSet.getString("nome"));
+                cliente.setCpf(resultSet.getString("cpf"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            dao.closeConnection(con);
+        }
+
+        return cliente;
+    }
 
     // Método para obter todos os clientes do banco de dados
     public List<Cliente> obterTodosClientes() {
