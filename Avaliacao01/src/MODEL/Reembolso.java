@@ -8,12 +8,6 @@ public class Reembolso {
     private Pagamento pagamento;
     
     
-	public Reembolso(Date data, double valor, Pagamento pagamento) {
-		this.data = data;
-		this.valor = valor;
-		this.pagamento = pagamento;
-	}
-    
 	public Reembolso() {
 		
 	}

@@ -79,6 +79,23 @@ public class Fatura_DAO {
         }
         return null;
     }
+    
+	public void atualizarFatura(Fatura fatura) {
+		DAO dao = new DAO();
+		Connection con = dao.conectar();
+		String query = "UPDATE Fatura SET  valor = ?, quitado = ? WHERE id = ?";
+		
+		try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
+			preparedStatement.setDouble(1, fatura.getValor());
+			preparedStatement.setBoolean(2, fatura.isQuitado());
+			preparedStatement.setInt(3, fatura.getId());
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			dao.closeConnection(con);
+		}
+	}
 
     private Fatura criarFatura(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id");

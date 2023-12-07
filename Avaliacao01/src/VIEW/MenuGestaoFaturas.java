@@ -10,6 +10,7 @@ import DAO.Imovel_DAO;
 import MODEL.Fatura;
 import MODEL.Imovel;
 import MODEL.Leitura;
+import MODEL.Pagamento;
 
 public abstract class MenuGestaoFaturas {
 
@@ -24,6 +25,7 @@ public abstract class MenuGestaoFaturas {
             System.out.println("1. Criar Fatura");
             System.out.println("2. Listar Todas as Faturas");
             System.out.println("3. Listar Faturas em Aberto");
+			System.out.println("4. Pagar Fatura");
             System.out.println("0. Voltar ao Menu Anterior");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
@@ -38,6 +40,8 @@ public abstract class MenuGestaoFaturas {
                 case 3:
                     listarFaturasEmAberto();
                     break;
+				case 4:
+					PagarFatura();
                 case 0:
                     System.out.println("Voltando ao Menu Anterior.");
                     break;
@@ -47,7 +51,29 @@ public abstract class MenuGestaoFaturas {
         } while (opcao != 0);
     }
 
-    private static void criarFatura() {
+    private static void PagarFatura() {
+		// TODO Auto-generated method stub
+    	System.out.println("==== Pagar Fatura ====");
+        System.out.print("Matrícula do Imóvel: ");
+        String matricula = scanner.next();
+        scanner = new Scanner(System.in);
+        
+        System.out.print("Codigo da Fatura: ");
+        int id_fatura = scanner.nextInt();
+        		        
+        Imovel imovel = imovelDAO.obterImovelPorMatricula(matricula);
+		Fatura fatura = faturaDAO.obterFaturaPorNumero(id_fatura);
+		if (imovel != null && fatura != null) {
+			System.out.println("Fatura: "+fatura.getValor());
+			System.out.print("Valor da Fatura Pago: ");
+	        double valor = scanner.nextDouble();
+			fatura.setQuitado(true);
+			Pagamento pagamento = new Pagamento(valor, fatura);
+			faturaDAO.atualizarFatura(pagamento.getFatura());
+		}
+	}
+
+	private static void criarFatura() {
         System.out.println("==== Criar Fatura ====");
         System.out.print("Matrícula do Imóvel: ");
         String matricula = scanner.next();
@@ -56,16 +82,18 @@ public abstract class MenuGestaoFaturas {
         Imovel imovel = imovelDAO.obterImovelPorMatricula(matricula);
         
         if (imovel != null) {
-
-            System.out.print("Nova Leitura Atual: ");
-            int novaLeituraAtual = scanner.nextInt();
-            Leitura L = new Leitura(imovel.getId(), novaLeituraAtual);
-            imovel.addLeitura(L);
-            
+                                    
             // Criar instância de Fatura
-            
-            Fatura fatura = new Fatura(L.getLeitura(), imovel.getUltimaLeitura(),imovel);
-            imovel.getFaturas().add(fatura);
+			Fatura fatura = new Fatura(imovel.getUltimaLeitura(), imovel.getPenultimaLeitura(), imovel);			          
+            ArrayList<Fatura> faturas = faturaDAO.obterFaturasPorImovel(imovel.getId());
+            if (faturas.size() > 0) {
+	            for (Fatura fat : faturas) {
+		            if(fat.getUltimaLeitura() == fatura.getUltimaLeitura() && fat.getPenultimaLeitura() == fatura.getPenultimaLeitura()) {
+		            	System.out.println("Fatura já existente!");
+		            	return;
+		            }
+	            }
+            }
             
             faturaDAO.adicionarFatura(fatura);
             
