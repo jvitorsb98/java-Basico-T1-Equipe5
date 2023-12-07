@@ -9,7 +9,7 @@ import java.util.Scanner;
 public abstract class MenuGestaoClientes {
 
     private static final Cliente_DAO clienteDAO = new Cliente_DAO();
-    private static final Scanner scanner = new Scanner(System.in);
+    private static Scanner scanner = new Scanner(System.in);
 
 
     public static void exibirMenu() {
@@ -67,7 +67,8 @@ public abstract class MenuGestaoClientes {
         String cpf = scanner.nextLine();
 
         if(Verificacoes.validarCPF(cpf)) {
-        	if(clienteDAO.obterClientePorCPF(cpf)==null) {
+        	Cliente c = clienteDAO.obterClientePorCPF(cpf);
+        	if(c == null) {
                 Cliente novoCliente = new Cliente(nome,cpf);
                 clienteDAO.adicionarCliente(novoCliente);
                 System.out.println("Cliente adicionado com sucesso!");
@@ -141,6 +142,7 @@ public abstract class MenuGestaoClientes {
             System.out.println("0. Voltar ao Menu Anterior");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
+            scanner = new Scanner(System.in);
 
             switch (opcao) {
                 case 1:
@@ -160,7 +162,7 @@ public abstract class MenuGestaoClientes {
 
     private static void atualizarNome(Cliente cliente) {
         System.out.print("Novo Nome: ");
-        String novoNome = scanner.next();
+        String novoNome = scanner.nextLine();
         cliente.setNome(novoNome);
         clienteDAO.atualizarCliente(cliente);
         System.out.println("Nome atualizado com sucesso!");
@@ -168,7 +170,7 @@ public abstract class MenuGestaoClientes {
 
     private static void atualizarCPF(Cliente cliente) {
         System.out.print("Novo CPF: ");
-        String novoCpf = scanner.next();
+        String novoCpf = scanner.nextLine();
 
         if (Verificacoes.validarCPF(novoCpf)) {
             cliente.setCpf(novoCpf);
@@ -179,9 +181,8 @@ public abstract class MenuGestaoClientes {
         }
     }
 
-
-
     private static void excluirCliente() {
+    	scanner = new Scanner(System.in);
         System.out.println("==== Excluir Cliente ====");
         System.out.print("Digite o CPF do cliente que deseja excluir: ");
         String cpf = scanner.next();

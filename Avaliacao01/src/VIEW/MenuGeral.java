@@ -35,5 +35,6 @@ public abstract class MenuGeral {
             }
 
         } while (opcao != 0);
+        System.exit(0);
     }
 }

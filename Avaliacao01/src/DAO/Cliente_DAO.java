@@ -9,17 +9,19 @@ import java.util.List;
 import MODEL.Cliente;
 public class Cliente_DAO {
 	// Método para adicionar um cliente ao banco de dados
-    public void adicionarCliente(Cliente cliente) {
+    public boolean adicionarCliente(Cliente cliente) {
     	DAO dao = new DAO();
     	Connection con = dao.conectar();
-        String query = "INSERT INTO clientes (nome, cpf) VALUES (?, ?)";
+        String query = "INSERT INTO Cliente (nome, cpf) VALUES (?, ?)";
 
         try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
             preparedStatement.setString(1, cliente.getNome());
             preparedStatement.setString(2, cliente.getCpf());
             preparedStatement.executeUpdate();
+            return true;
         } catch (SQLException e) {
-            e.printStackTrace();
+        	System.out.println("Erro ao adicionar o cliente: " + e);
+            return false;
         } finally {
         	dao.closeConnection(con);
         }
@@ -30,7 +32,7 @@ public class Cliente_DAO {
     	DAO dao = new DAO();
     	Connection con = dao.conectar();
         Cliente cliente = null;
-        String query = "SELECT * FROM clientes WHERE id = ?";
+        String query = "SELECT * FROM Cliente WHERE id = ?";
 
         try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
             preparedStatement.setInt(1, id);
@@ -55,25 +57,28 @@ public class Cliente_DAO {
         DAO dao = new DAO();
         Connection con = dao.conectar();
         Cliente cliente = null;
-        String query = "SELECT * FROM clientes WHERE cpf = ?";
+        String query = "SELECT * FROM Cliente WHERE cpf = ?";
 
         try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
             preparedStatement.setString(1, cpf);
             ResultSet resultSet = preparedStatement.executeQuery();
-
+            
             if (resultSet.next()) {
                 cliente = new Cliente();
                 cliente.setId(resultSet.getInt("id"));
                 cliente.setNome(resultSet.getString("nome"));
                 cliente.setCpf(resultSet.getString("cpf"));
+                return cliente;
+            }else {
+            	return null;
             }
+            //060.330.360-93
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         } finally {
             dao.closeConnection(con);
         }
-
-        return cliente;
     }
 
     // Método para obter todos os clientes do banco de dados
@@ -81,7 +86,7 @@ public class Cliente_DAO {
     	DAO dao = new DAO();
     	Connection con = dao.conectar();
         List<Cliente> clientes = new ArrayList<>();
-        String query = "SELECT * FROM clientes";
+        String query = "SELECT * FROM Cliente";
 
         try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -106,7 +111,7 @@ public class Cliente_DAO {
     public void atualizarCliente(Cliente cliente) {
     	DAO dao = new DAO();
     	Connection con = dao.conectar();
-        String query = "UPDATE clientes SET nome = ?, cpf = ? WHERE id = ?";
+        String query = "UPDATE Cliente SET nome = ?, cpf = ? WHERE id = ?";
 
         try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
             preparedStatement.setString(1, cliente.getNome());
@@ -124,7 +129,7 @@ public class Cliente_DAO {
     public void excluirCliente(int id) {
     	DAO dao = new DAO();
     	Connection con = dao.conectar();
-        String query = "DELETE FROM clientes WHERE id = ?";
+        String query = "DELETE FROM Cliente WHERE id = ?";
 
         try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
             preparedStatement.setInt(1, id);

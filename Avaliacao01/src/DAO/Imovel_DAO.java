@@ -14,13 +14,14 @@ public class Imovel_DAO {
     public void adicionarImovel(Imovel imovel) {
         DAO dao = new DAO();
         Connection con = dao.conectar();
-        String query = "INSERT INTO imoveis (matricula, endereco, ultimaLeitura, penultimaLeitura) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO Imovel (matricula, endereco, ultimaLeitura, penultimaLeitura,id_cliente) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
             preparedStatement.setString(1, imovel.getMatricula());
             preparedStatement.setString(2, imovel.getEndereco());
             preparedStatement.setInt(3, imovel.getUltimaLeitura());
             preparedStatement.setInt(4, imovel.getPenultimaLeitura());
+			preparedStatement.setInt(5, imovel.getCliente().getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -34,7 +35,7 @@ public class Imovel_DAO {
         DAO dao = new DAO();
         Connection con = dao.conectar();
         Imovel imovel = null;
-        String query = "SELECT * FROM imoveis WHERE id = ?";
+        String query = "SELECT * FROM Imovel WHERE id = ?";
 
         try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
             preparedStatement.setInt(1, id);
@@ -61,7 +62,7 @@ public class Imovel_DAO {
         DAO dao = new DAO();
         Connection con = dao.conectar();
         Imovel imovel = null;
-        String query = "SELECT * FROM imoveis WHERE matricula = ?";
+        String query = "SELECT * FROM Imovel WHERE matricula = ?";
 
         try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
             preparedStatement.setString(1, matricula);
@@ -89,7 +90,7 @@ public class Imovel_DAO {
         DAO dao = new DAO();
         Connection con = dao.conectar();
         List<Imovel> imoveis = new ArrayList<>();
-        String query = "SELECT * FROM imoveis";
+        String query = "SELECT * FROM Imovel";
 
         try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -100,7 +101,7 @@ public class Imovel_DAO {
                 imovel.setMatricula(resultSet.getString("matricula"));
                 imovel.setEndereco(resultSet.getString("endereco"));
                 imovel.setUltimaLeitura(resultSet.getInt("ultimaLeitura"));
-                imovel.setPenultimaLeitura(resultSet.getInt("penultimaLeitura"));
+                imovel.setPenultimaLeitura(resultSet.getInt("PenultimaLeitura"));
                 imoveis.add(imovel);
             }
         } catch (SQLException e) {
@@ -116,8 +117,8 @@ public class Imovel_DAO {
     public void atualizarImovel(Imovel imovel) {
         DAO dao = new DAO();
         Connection con = dao.conectar();
-        String query = "UPDATE imoveis SET matricula = ?, endereco = ?, ultimaLeitura = ?, penultimaLeitura = ? WHERE id = ?";
-
+        String query = "UPDATE Imovel SET matricula = ?, endereco = ?, ultimaLeitura = ?, penultimaLeitura = ? WHERE id = ?";
+        
         try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
             preparedStatement.setString(1, imovel.getMatricula());
             preparedStatement.setString(2, imovel.getEndereco());
@@ -136,7 +137,7 @@ public class Imovel_DAO {
     public void excluirImovelPorMatricula(String matricula) {
         DAO dao = new DAO();
         Connection con = dao.conectar();
-        String query = "DELETE FROM imoveis WHERE matricula = ?";
+        String query = "DELETE FROM Imovel WHERE matricula = ?";
 
         try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
             preparedStatement.setString(1, matricula);

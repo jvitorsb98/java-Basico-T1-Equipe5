@@ -1,9 +1,8 @@
 import VIEW.MenuGeral;
-import VIEW.MenuGestaoClientes;
+public class main {
 
-public class Main {
-
-    public static void main(String[] args) {
-        MenuGeral.exibirMenuGeral();
-    }
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		MenuGeral.exibirMenuGeral();
+	}
 }

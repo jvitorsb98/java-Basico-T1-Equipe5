@@ -6,33 +6,47 @@ public class Imovel {
 	private int id;
     private String matricula;
     private String endereco;
-    private int ultimaLeitura;
-    private int penultimaLeitura;
-    private static int quantidadeDeImoveis;
+    private Leitura ultimaLeitura;
+    private Leitura penultimaLeitura;
+    private ArrayList<Leitura> leituras;
     private ArrayList<Fatura> faturas;
     Cliente cliente;
 
-	    
     public Imovel() {
+    	this.ultimaLeitura = new Leitura();
+		this.penultimaLeitura = new Leitura();
+    	leituras = new ArrayList<>();
+		faturas = new ArrayList<>();
 	}
     
-
-	public Imovel(String matricula, String endereco, int ultimaLeitura, int penultimaLeitura, Cliente cliente) {
-		quantidadeDeImoveis++;
-		this.id = quantidadeDeImoveis;
-		this.id = id;
+	public Imovel(String matricula, String endereco, Cliente cliente) {
 		this.matricula = matricula;
 		this.endereco = endereco;
-		this.ultimaLeitura = ultimaLeitura;
-		this.penultimaLeitura = penultimaLeitura;
+		this.ultimaLeitura = new Leitura();
+		this.penultimaLeitura = new Leitura();
 		this.cliente = cliente;
+		leituras = new ArrayList<>();
 		faturas = new ArrayList<>();
 	}
 
 	public ArrayList<Fatura> getFaturas() {
 		return faturas;
 	}
-
+	
+	public void addLeitura(Leitura leitura) {
+		if (this.ultimaLeitura == null && this.penultimaLeitura == null) {
+			this.ultimaLeitura = leitura;
+			this.penultimaLeitura = leitura;
+		}else {
+			this.penultimaLeitura = ultimaLeitura;
+			this.ultimaLeitura = leitura;
+		}
+		this.leituras.add(leitura);
+	}
+	
+	public ArrayList<Leitura> getLeitura() {
+		return leituras;
+	}
 	
 	public Cliente getCliente() {
 		return cliente;
@@ -61,16 +75,22 @@ public class Imovel {
 		this.endereco = endereco;
 	}
 	public int getUltimaLeitura() {
-		return ultimaLeitura;
+		if (ultimaLeitura == null) {
+			return 0;
+		}
+		return ultimaLeitura.getLeitura();
 	}
 	public void setUltimaLeitura(int ultimaLeitura) {
-		this.ultimaLeitura = ultimaLeitura;
+		this.ultimaLeitura.setLeitura(ultimaLeitura);
 	}
 	public int getPenultimaLeitura() {
-		return penultimaLeitura;
+		if (penultimaLeitura == null) {
+			return 0;
+		}
+		return penultimaLeitura.getLeitura();
 	}
 	public void setPenultimaLeitura(int penultimaLeitura) {
-		this.penultimaLeitura = penultimaLeitura;
+		this.penultimaLeitura.setLeitura(penultimaLeitura);
 	}
     
 }

@@ -23,7 +23,7 @@ public class DAO {
 		try {
 			Class.forName(driver);
 			con = DriverManager.getConnection(URL, USER, SENHA);
-			System.out.println("Conexão Feita com Sucesso !!!! ");
+			//System.out.println("Conexão Feita com Sucesso !!!! ");
 		} catch (ClassNotFoundException | SQLException ex) {
 			throw new RuntimeException("Erro na conexão com o Banco de dados: ", ex);
 		}
@@ -45,17 +45,17 @@ public class DAO {
 		try {
 			if (con != null) {
 				con.close();
-				System.out.println("Conexão fechada !!!");
+				//System.out.println("Conexão fechada !!!");
 			}
 		} catch (SQLException ex) {
 			Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		DAO d = new DAO();
 
 		d.testeConnexao();
-	}
+	}*/
 
 }

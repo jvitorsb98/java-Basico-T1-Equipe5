@@ -7,19 +7,16 @@ public class Cliente {
     private String nome;
     private String cpf;
     ArrayList<Imovel> imoveisCliente;
-    private static int quantidadeDeClientesCriados;
-    
+        
     
 	public Cliente(String nome, String cpf) {
-		quantidadeDeClientesCriados++;
-		this.id = quantidadeDeClientesCriados;
 		this.nome = nome;
 		this.cpf = cpf;
 		this.imoveisCliente = new ArrayList<>();
 	}
 	
 	public Cliente() {
-		
+		this.imoveisCliente = new ArrayList<>();
 	}
 	
     public void adicionarImovel(Imovel imovel) {

@@ -5,14 +5,17 @@ import java.util.Scanner;
 
 import DAO.Cliente_DAO;
 import DAO.Imovel_DAO;
+import DAO.Leitura_DAO;
 import MODEL.Cliente;
 import MODEL.Imovel;
+import MODEL.Leitura;
 import MODEL.Verificacoes;
 
 public abstract class MenuGestaoImoveis {
 
     private static final Cliente_DAO clienteDAO = new Cliente_DAO();
     private static final Imovel_DAO imovelDAO = new Imovel_DAO();
+	private static final Leitura_DAO leituraDAO = new Leitura_DAO();
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void exibirMenu() {
@@ -24,6 +27,7 @@ public abstract class MenuGestaoImoveis {
             System.out.println("3. Buscar Imóvel por ID");
             System.out.println("4. Atualizar Imóvel");
             System.out.println("5. Excluir Imóvel");
+			System.out.println("6. Realizar Leituras");
             System.out.println("0. Sair");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
@@ -44,6 +48,9 @@ public abstract class MenuGestaoImoveis {
                 case 5:
                     excluirImovel();
                     break;
+				case 6:
+					realizarLeituras();
+					break;
                 case 0:
                     System.out.println("Saindo do Menu. Até logo!");
                     break;
@@ -61,11 +68,7 @@ public abstract class MenuGestaoImoveis {
         System.out.print("Endereço: ");
         String endereco = scanner.nextLine();  // Consumir a quebra de linha pendente
         endereco = scanner.nextLine();  // Agora obter a entrada correta para o endereço
-        System.out.print("Última Leitura: ");
-        int ultimaLeitura = scanner.nextInt();
-        System.out.print("Penúltima Leitura: ");
-        int penultimaLeitura = scanner.nextInt();
-
+                
         System.out.println("Qual CPF do cliente dono do imóvel? ");
         String cpf = scanner.next();
 
@@ -73,11 +76,11 @@ public abstract class MenuGestaoImoveis {
             Cliente cliente = clienteDAO.obterClientePorCPF(cpf);
 
             if (cliente != null) {
-                Imovel novoImovel = new Imovel(matricula, endereco, ultimaLeitura, penultimaLeitura, cliente);
+                Imovel novoImovel = new Imovel(matricula, endereco, cliente);
                 // Utiliza o método que verifica se já existe um imóvel com a mesma matrícula
                 if (imovelDAO.obterImovelPorMatricula(matricula) == null) {
                 	cliente.adicionarImovel(novoImovel);
-                    imovelDAO.adicionarImovel(novoImovel);
+					imovelDAO.adicionarImovel(novoImovel);
                     System.out.println("Imóvel adicionado com sucesso!");
                 } else {
                     System.out.println("Já existe um imóvel com a mesma matrícula.");
@@ -89,8 +92,6 @@ public abstract class MenuGestaoImoveis {
             System.out.println("CPF inválido.");
         }
     }
-
-
 
     private static void listarTodosImoveis() {
         System.out.println("==== Listar Todos os Imóveis ====");
@@ -106,7 +107,6 @@ public abstract class MenuGestaoImoveis {
             }
         }
     }
-
 
     private static void buscarImovelPorMatricula() {
         System.out.println("==== Buscar Imóvel por Matrícula ====");
@@ -206,7 +206,6 @@ public abstract class MenuGestaoImoveis {
         System.out.println("Penúltima Leitura atualizada com sucesso!");
     }
 
-
     private static void excluirImovel() {
         System.out.println("==== Excluir Imóvel ====");
         System.out.print("Digite a Matrícula do imóvel que deseja excluir: ");
@@ -219,10 +218,27 @@ public abstract class MenuGestaoImoveis {
         	clienteDAO.atualizarCliente(clienteDono);
             imovelDAO.excluirImovelPorMatricula(matricula);
             System.out.println("Imóvel excluído com sucesso!");
-        } else {
+        }else{
             System.out.println("Imóvel não encontrado.");
         }
     }
-
+    
+    private static void realizarLeituras() {
+    	System.out.println("==== Realizar Leitura de Imóvel ====");
+        System.out.print("Digite a Matrícula do imóvel que deseja Fazer a Leitura: ");
+        String matricula = scanner.next();
+        
+		Imovel imovel = imovelDAO.obterImovelPorMatricula(matricula);
+		if (imovel != null) {
+			Leitura leitura = new Leitura();
+			leitura.setId_imovel(imovel.getId());
+			System.out.print("Digite o valor da Leitura: ");
+	        int resposta = scanner.nextInt();
+	        leitura.setLeitura(resposta);
+	        leituraDAO.adicionarLeitura(leitura);
+	        imovel.addLeitura(leitura);
+	        imovelDAO.atualizarImovel(imovel);
+		}
+    }
 
 }
