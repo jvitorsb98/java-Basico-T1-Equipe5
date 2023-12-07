@@ -34,13 +34,10 @@ public class Imovel {
 	}
 	
 	public void addLeitura(Leitura leitura) {
-		if (this.ultimaLeitura == null && this.penultimaLeitura == null) {
-			this.ultimaLeitura = leitura;
-			this.penultimaLeitura = leitura;
-		}else {
-			this.penultimaLeitura = ultimaLeitura;
-			this.ultimaLeitura = leitura;
-		}
+		
+		this.penultimaLeitura.setLeitura(ultimaLeitura.getLeitura());
+		this.ultimaLeitura.setLeitura(leitura.getLeitura());
+				
 		this.leituras.add(leitura);
 	}
 	

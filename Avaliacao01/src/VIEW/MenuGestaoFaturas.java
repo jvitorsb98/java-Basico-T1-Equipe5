@@ -5,14 +5,17 @@ package VIEW;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import DAO.Fatura_DAO;
 import DAO.Imovel_DAO;
 import MODEL.Fatura;
 import MODEL.Imovel;
+import MODEL.Leitura;
 
 public abstract class MenuGestaoFaturas {
 
-    private static final Scanner scanner = new Scanner(System.in);
+    private static Scanner scanner = new Scanner(System.in);
     private static final Imovel_DAO imovelDAO = new Imovel_DAO();
+    private static final Fatura_DAO faturaDAO = new Fatura_DAO();
 
     public static void exibirMenu() {
         int opcao;
@@ -48,26 +51,24 @@ public abstract class MenuGestaoFaturas {
         System.out.println("==== Criar Fatura ====");
         System.out.print("Matrícula do Imóvel: ");
         String matricula = scanner.next();
+        scanner = new Scanner(System.in);
 
         Imovel imovel = imovelDAO.obterImovelPorMatricula(matricula);
-
+        
         if (imovel != null) {
-            int ultimaLeitura = imovel.getUltimaLeitura();
-            int penultimaLeitura = imovel.getPenultimaLeitura();
 
-            imovel.setPenultimaLeitura(ultimaLeitura);
             System.out.print("Nova Leitura Atual: ");
             int novaLeituraAtual = scanner.nextInt();
-            imovel.setUltimaLeitura(novaLeituraAtual);
-
-            double custoPorKWh = 10.0;
-            double valorFatura = (novaLeituraAtual - penultimaLeitura) * custoPorKWh;
-
+            Leitura L = new Leitura(imovel.getId(), novaLeituraAtual);
+            imovel.addLeitura(L);
+            
             // Criar instância de Fatura
-            Fatura fatura = new Fatura(ultimaLeitura, novaLeituraAtual,valorFatura,imovel);
+            
+            Fatura fatura = new Fatura(L.getLeitura(), imovel.getUltimaLeitura(),imovel);
             imovel.getFaturas().add(fatura);
             
-
+            faturaDAO.adicionarFatura(fatura);
+            
             System.out.println("Fatura criada com sucesso!");
         } else {
             System.out.println("Imóvel não encontrado.");
@@ -82,7 +83,7 @@ public abstract class MenuGestaoFaturas {
         Imovel imovel = imovelDAO.obterImovelPorMatricula(matricula);
 
         if (imovel != null) {
-            ArrayList<Fatura> faturasDoImovel = imovel.getFaturas();
+        	ArrayList<Fatura> faturasDoImovel = faturaDAO.obterFaturasPorImovel(imovel.getId());
             for (Fatura fatura : faturasDoImovel) {
                 exibirDetalhesFatura(fatura);
             }
@@ -99,7 +100,7 @@ public abstract class MenuGestaoFaturas {
         Imovel imovel = imovelDAO.obterImovelPorMatricula(matricula);
 
         if (imovel != null) {
-            ArrayList<Fatura> faturasDoImovel = imovel.getFaturas();
+            ArrayList<Fatura> faturasDoImovel = faturaDAO.obterFaturasPorImovel(imovel.getId());
             for (Fatura fatura : faturasDoImovel) {
                 if (!fatura.isQuitado()) {
                     exibirDetalhesFatura(fatura);
@@ -114,7 +115,7 @@ public abstract class MenuGestaoFaturas {
         System.out.println("Data de Emissão: " + fatura.getData());
         System.out.println("Última Leitura: " + fatura.getUltimaLeitura());
         System.out.println("Penúltima Leitura: " + fatura.getPenultimaLeitura());
-        System.out.println("Valor: " + fatura.getValor());
+        System.out.println("Valor: " + String.format("%.2f", fatura.getValor()));
         System.out.println("Quitada: " + (fatura.isQuitado() ? "Sim" : "Não"));
         System.out.println("--------");
     }

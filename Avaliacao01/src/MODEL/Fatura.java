@@ -11,22 +11,22 @@ public class Fatura {
     private double valor;
     private boolean quitado;
     private Imovel imovel;
-    private static int quantidadeDeFaturasCriadas;
     ArrayList<Pagamento> listaPagamentos;
 
-    public Fatura(int ultimaLeitura, int penultimaLeitura, double valor, Imovel imovel) {
-        quantidadeDeFaturasCriadas++;
-        this.id = quantidadeDeFaturasCriadas;
+    public Fatura(int ultimaLeitura, int penultimaLeitura, Imovel imovel) {
+        
         this.data = LocalDate.now();
         this.ultimaLeitura = ultimaLeitura;
         this.penultimaLeitura = penultimaLeitura;
-        this.valor = valor;
+        CalcularValor();
         this.quitado = false;
         this.imovel = imovel;
         listaPagamentos = new ArrayList<>();
     }
 
     public Fatura() {
+    	listaPagamentos = new ArrayList<>();
+    	this.quitado = false;
     }
 
     public int getId() {
@@ -64,9 +64,17 @@ public class Fatura {
     public double getValor() {
         return valor;
     }
-
-    public void setValor(double valor) {
-        this.valor = valor;
+    
+	public void setValor(double valor) {
+		this.valor = valor;
+	}
+    
+    public void CalcularValor() {
+		if (this.ultimaLeitura > this.penultimaLeitura) {
+			this.valor = (this.ultimaLeitura - this.penultimaLeitura)*10;
+		}else {
+			this.valor = (this.penultimaLeitura - this.ultimaLeitura)*10;
+		}
     }
 
     public boolean isQuitado() {

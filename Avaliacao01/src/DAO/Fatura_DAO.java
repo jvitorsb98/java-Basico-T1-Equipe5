@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
-
 import MODEL.Fatura;
 import MODEL.Imovel;
 
@@ -20,7 +18,7 @@ public class Fatura_DAO {
         DAO dao = new DAO();
         Connection con = dao.conectar();
 
-        String query = "INSERT INTO faturas (data, ultimaLeitura, penultimaLeitura, valor, quitado, imovel_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Fatura (data, ultimaLeitura, PenultimaLeitura, valor, quitado, id_imovel) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
             preparedStatement.setDate(1, java.sql.Date.valueOf(fatura.getData()));
@@ -38,20 +36,19 @@ public class Fatura_DAO {
         }
     }
 
-    public List<Fatura> obterFaturasPorImovel(int imovelId) {
-        List<Fatura> faturas = new ArrayList<>();
+    public ArrayList<Fatura> obterFaturasPorImovel(int imovelId) {
+    	ArrayList<Fatura> faturas = new ArrayList<>();
         DAO dao = new DAO();
         Connection con = dao.conectar();
 
-        String query = "SELECT * FROM faturas WHERE imovel_id = ?";
+        String query = "SELECT * FROM Fatura WHERE id_imovel = ?";
 
         try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
             preparedStatement.setInt(1, imovelId);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
-                    Fatura fatura = criarFatura(resultSet);
-                    faturas.add(fatura);
+                    faturas.add(criarFatura(resultSet));
                 }
             }
         } catch (SQLException e) {
@@ -66,7 +63,7 @@ public class Fatura_DAO {
     public Fatura obterFaturaPorNumero(int idFatura) {
         DAO dao = new DAO();
         Connection con = dao.conectar();
-        String query = "SELECT * FROM faturas WHERE id = ?";
+        String query = "SELECT * FROM Fatura WHERE id = ?";
 
         try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
             preparedStatement.setInt(1, idFatura);
@@ -90,7 +87,7 @@ public class Fatura_DAO {
         int penultimaLeitura = resultSet.getInt("penultimaLeitura");
         double valor = resultSet.getDouble("valor");
         boolean quitado = resultSet.getBoolean("quitado");
-        int imovelId = resultSet.getInt("imovel_id");
+        int imovelId = resultSet.getInt("id_imovel");
 
         Imovel imovel = imovelDAO.obterImovelPorId(imovelId);
 
@@ -105,6 +102,4 @@ public class Fatura_DAO {
 
         return fatura;
     }
-
-
 }
